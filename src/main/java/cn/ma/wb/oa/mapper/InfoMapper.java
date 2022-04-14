@@ -20,5 +20,5 @@ public interface InfoMapper {
     List<MenuModel> getSideBarItemList();
 
     @Select("select * from classlist")
-    List<ListModel> getClassList();
+    List<ListModel> getClassesList();
 }

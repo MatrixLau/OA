@@ -31,7 +31,7 @@ public class InfoServiceImpl implements InfoService {
     }
 
     @Override
-    public List<ListModel> getClassList() {
-        return infoMapper.getClassList();
+    public List<ListModel> getClassesList() {
+        return infoMapper.getClassesList();
     }
 }

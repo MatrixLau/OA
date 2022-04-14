@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>OA系统</title>
@@ -12,6 +11,7 @@
 </head>
 <script src="layui/layui.js" charset="utf-8"></script>
 <script th:inline="javascript">
+
     const member = [[${member}]];
 
     layui.use(['form'], function(){
@@ -20,33 +20,23 @@
 
         //监听提交
         form.on('submit(submitBtn)', function(data){
-            layer.open({
-                type: 1
-                ,title: '确认操作' //不显示标题栏
-                ,closeBtn: false
-                ,area: '300px;'
-                ,shade: 0.8
-                ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                ,btn: ['确认', '取消']
-                ,btnAlign: 'c'
-                ,moveType: 1 //拖拽模式，0或者1
-                ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">是否执行该操作？</div>'
-                ,btn1: function() {
-                    let formData = data.field;
-                    $.post("/ticket/add", {
-                        submit_m_id:member.m_id,
-                        submit_membership:member.membership,
-                        title:formData.title,
-                        detail:formData.detail,
-                    },function (result) {
-                        layer.msg(result.message);
-                        if (result.flag) {
-                            setTimeout( function(){
-                                window.location.reload();
-                            }, 1500 );
-                        }
-                    });
-                }
+            layer.confirm('确定申请？', function(index){
+                let formData = data.field;
+                $.post("/ticket/add", {
+                    submit_m_id:member.m_id,
+                    submit_membership:member.membership,
+                    submit_class:member.class_id,
+                    title:formData.title,
+                    detail:formData.detail
+                },function (result) {
+                    layer.msg(result.message);
+                    if (result.flag) {
+                        setTimeout( function(){
+                            window.location.reload();
+                        }, 1200 );
+                    }
+                });
+                layer.close(index);
             });
             return false;
         });

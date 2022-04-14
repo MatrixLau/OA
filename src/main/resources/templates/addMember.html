@@ -37,10 +37,10 @@
 
         form.on('radio(membershipChange)', function(data){
             if (data.value > 1) {
-                $("[name=class]").val('');
-                $("[name=class]").attr("disabled","disabled");
+                $("[name=classid]").val('');
+                $("[name=classid]").attr("disabled","disabled");
             } else {
-                $("[name=class]").removeAttr("disabled");
+                $("[name=classid]").removeAttr("disabled");
             }
             form.render("select");
         });
@@ -51,39 +51,22 @@
             //         title: '最终的提交信息'
             //     // })
             // });
-            layer.open({
-                type: 1
-                ,title: '确认操作' //不显示标题栏
-                ,closeBtn: false
-                ,area: '300px;'
-                ,shade: 0.8
-                ,id: 'LAY_layuipro' //设定一个id，防止重复弹出
-                ,btn: ['确认', '取消']
-                ,btnAlign: 'c'
-                ,moveType: 1 //拖拽模式，0或者1
-                ,content: '<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">是否执行该操作？</div>'
-                ,btn1: function() {
-                    let formData = data.field;
-                    $.post("user/add", {
-                        name:formData.name,
-                        sex:formData.sex,
-                        membership:formData.membership,
-                        username:formData.username,
-                        password:formData.password
-                    },function (result) {
-                        layer.msg(result.message);
-                        if (result.flag) {
-                            setTimeout( function(){
-                                window.location.reload();
-                            }, 1500 );
-                        }
-                    });
-                // var btn = layero.find('.layui-layer-btn');
-                // btn.find('.layui-layer-btn0').attr({
-                //     href: 'http://www.layuion.com/'
-                //     ,target: '_blank'
-                // });
-                }
+            layer.confirm('确定申请？', function(index){
+                let formData = data.field;
+                $.post("user/add", {
+                    name:formData.name,
+                    sex:formData.sex,
+                    membership:formData.membership,
+                    class_id:formData.classid,
+                    username:formData.username,
+                    password:formData.password
+                },function (result) {
+                    layer.msg(result.message);
+                    setTimeout( function(){
+                        window.location.reload();
+                    }, 1200 );
+                });
+                layer.close(index);
             });
             return false;
         });
@@ -105,13 +88,13 @@
     });
 
     //加载行政班级
-    $.get("/info/getClassList", function loadClass(classList) {
+    $.get("/info/getClassesList", function loadClass(classList) {
         classList = eval(classList);
         let op = '';
         for (let i = 0; i < classList.length; i++) {
             op += '<option value="'+classList[i].id+'">'+classList[i].text+'</option>';
         }
-        $("[name=class]").append(op);
+        $("[name=classid]").append(op);
         layui.form.render('select', 'submit-form');
     });
 
@@ -128,7 +111,7 @@
                     </fieldset>
                 </div>
                 <div class="layui-card-body">
-                    <form class="layui-form" action="" lay-filter="submit-form">
+                    <form class="layui-form" action="" lay-filter="submit-form" id="submit-form">
                         <div class="layui-form-item">
                             <label class="layui-form-label">用户名</label>
                             <div class="layui-input-block">
@@ -150,7 +133,7 @@
                         <div class="layui-form-item">
                             <label class="layui-form-label">行政班级</label>
                             <div class="layui-input-block" >
-                                <select name="class" lay-verify="notSelected">
+                                <select name="classid" lay-verify="notSelected">
                                     <option value="">请选择</option>
                                 </select>
                             </div>

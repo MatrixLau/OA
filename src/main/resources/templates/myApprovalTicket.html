@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<table class="layui-hide" id="ticketTable"></table>
+<table class="layui-hide" id="ticketTable" lay-filter="ticketTable"></table>
 
 <script src="layui/layui.js" charset="utf-8"></script>
 <script src="js/jquery-3.3.1.js" charset="utf-8"></script>
@@ -26,9 +26,39 @@
     layui.use('table', function(){
         let table = layui.table;
 
+        // $.get("/ticket/findByApprovalMID",{approval_m_id:member.m_id}, function (result) {
+        //     let data = result.object;
+        //     alert(data);
+        //     for (let i = 0; i < data.length; i++){
+        //         $.get("/user/findByID",{m_id:data[i].submit_m_id}, function (result){
+        //             data[i].submit_m_id = result.object.name;
+        //         });
+        //         table.render();
+        //         data[i].approval_m_id = member.name;
+        //     }
+        //     table.render({
+        //         elem: '#ticketTable'
+        //         ,cols: [
+        //             [
+        //                 {field:'t_id', width:100, title: '申请ID', sort: true},
+        //                 {field:'submit_m_id', width:105, title: '申请用户', sort: true},
+        //                 {field:'submit_membership', width:130, title: '申请用户身份', sort: true},
+        //                 {field:'title', minWidth:200, title: '标题'},
+        //                 {field:'detail', minWidth:250, title: '申请详情'},
+        //                 {field:'approval', title: '处理状态', width: 100},
+        //                 {field:'approval_m_id', width:100, title: '处理人', sort: true},
+        //                 {field:'approval_advice', minWidth:100, title: '处理意见'},
+        //                 {fixed: 'right', width:178, align:'center', toolbar: '#bar'}
+        //             ]
+        //         ],
+        //         page: true,
+        //         data:data
+        //     });
+        // });
+
         table.render({
             elem: '#ticketTable'
-            ,url:'/ticket/findBySubmitMID?submit_m_id=' + member.m_id
+            ,url:'/ticket/findByApprovalMID?approval_m_id=' + member.m_id
             ,cols: [
                 [
                     {field:'t_id', width:100, title: '申请ID', sort: true},
@@ -69,9 +99,9 @@
                 layer.msg("申请已被处理");
                 return false;
             }
-            if(obj.event === 'edit'){
-                layer.confirm('是否修改申请？', function(index){
-                    $.post("/ticket/edit", {t_id:data.t_id}, function (result){
+            if(obj.event === 'submit'){
+                layer.confirm('是否确定上呈？', function(index){
+                    $.post("/ticket/submit", {t_id:data.t_id}, function (result){
                         layer.msg(result.message);
                         if (result.flag) {
                             setTimeout( function(){
@@ -81,9 +111,21 @@
                     });
                     layer.close(index);
                 });
-            } else if(obj.event === 'del'){
-                layer.confirm('是否删除申请？', function(index){
-                    $.post("/ticket/del", {t_id:data.t_id}, function (result){
+            } else if(obj.event === 'agree'){
+                layer.confirm('是否确定同意？', function(index){
+                    $.post("/ticket/edit", {t_id:data.t_id, approval:"1", approval_advice:"同意"}, function (result){
+                        layer.msg(result.message);
+                        if (result.flag) {
+                            setTimeout( function(){
+                                window.location.reload();
+                            }, 1200 );
+                        }
+                    });
+                    layer.close(index);
+                });
+            } else if(obj.event === 'deny'){
+                layer.confirm('是否确定拒绝？', function(index){
+                    $.post("/ticket/edit", {t_id:data.t_id, approval:"1", approval_advice:"拒绝"}, function (result){
                         layer.msg(result.message);
                         if (result.flag) {
                             setTimeout( function(){
@@ -96,10 +138,12 @@
             }
         });
     });
+
 </script>
 <script type="text/html" id="bar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="submit">上呈</a>
+    <a class="layui-btn layui-btn-xs" lay-event="agree">同意</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="deny">拒绝</a>
 </script>
 </body>
 </html>

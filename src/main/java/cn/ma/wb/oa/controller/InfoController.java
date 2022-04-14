@@ -36,8 +36,8 @@ public class InfoController {
     }
 
     @ResponseBody
-    @RequestMapping("/getClassList")
-    public List<ListModel> getClassList(){
-        return infoService.getClassList();
+    @RequestMapping("/getClassesList")
+    public List<ListModel> getClassesList(){
+        return infoService.getClassesList();
     }
 }

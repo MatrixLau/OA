@@ -11,7 +11,13 @@ public interface TicketService {
 
     ResponseModel editTicket(Ticket ticket);
 
+    ResponseModel findTicketByID(int t_id);
+
     ResponseModel findTicketBySubmitMID(int submit_m_id);
 
+    ResponseModel findTicketByApprovalMID(int approval_m_id);
+
     ResponseModel approvalTicket(Ticket ticket);
+
+    ResponseModel submitTicket(int t_id);
 }

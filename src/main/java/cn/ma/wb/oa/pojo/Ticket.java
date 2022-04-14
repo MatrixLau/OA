@@ -13,11 +13,14 @@ public class Ticket {
     private int t_id;
     private String submit_m_id;
     private String submit_membership;
+    private String submit_class;
     private String title;
     private String detail;
 
     private boolean approval;
     private String approval_m_id;
     private String approval_advice;
+
+    private String submit_t_id;
 
 }

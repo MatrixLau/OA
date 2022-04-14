@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.Map;
 
@@ -31,9 +30,9 @@ public class UserServiceImpl implements UserService{
         member.setSalt(salt);
         member.setPassword(password);
         if (userMapper.insert(member) <= 0) {
-            return responseModel.response(false, ResultCode.ADD_FAIL);
+            return responseModel.response(false, ResultCode.MEMBER_ADD_FAIL);
         } else {
-            return responseModel.response(true, ResultCode.ADD_SUCCESS);
+            return responseModel.response(true, ResultCode.MEMBER_ADD_SUCCESS);
         }
     }
 
@@ -41,9 +40,9 @@ public class UserServiceImpl implements UserService{
     public ResponseModel delUser(int m_id){
         ResponseModel responseModel = new ResponseModel();
         if (userMapper.deleteById(m_id) <= 0) {
-            return responseModel.response(false, ResultCode.DEL_FAIL);
+            return responseModel.response(false, ResultCode.MEMBER_DEL_FAIL);
         }
-        return responseModel.response(true, ResultCode.DEL_SUCCESS);
+        return responseModel.response(true, ResultCode.MEMBER_DEL_SUCCESS);
     }
 
     @Override
@@ -51,9 +50,9 @@ public class UserServiceImpl implements UserService{
         ResponseModel responseModel = new ResponseModel();
 //            Member ori = (Member) findUserByID(member.getM_id()).getObject();
 //            if (ori == null) return responseModel.response(false, ResultCode.ID_MISSING);
-        if (userMapper.updateById(member) <= 0)  return responseModel.response(false, ResultCode.EDIT_FAIL);
+        if (userMapper.updateById(member) <= 0)  return responseModel.response(false, ResultCode.MEMBER_EDIT_FAIL);
         member = (Member) findUserByID(member.getM_id()).getObject();
-        return responseModel.response(true, ResultCode.EDIT_SUCCESS, null, member);
+        return responseModel.response(true, ResultCode.MEMBER_EDIT_SUCCESS, null, member);
         }
 
     @Override
@@ -61,10 +60,10 @@ public class UserServiceImpl implements UserService{
         ResponseModel responseModel = new ResponseModel();
         Member member = userMapper.selectById(m_id);
         if (member == null){
-            return responseModel.response(false, ResultCode.ID_MISSING);
+            return responseModel.response(false, ResultCode.MEMBER_ID_MISSING);
         }
         //member = matchInfo(member);
-        return responseModel.response(true, ResultCode.FIND_SUCCESS, null, member);
+        return responseModel.response(true, ResultCode.MEMBER_FIND_SUCCESS, null, member);
     }
 
     @Override
@@ -74,17 +73,17 @@ public class UserServiceImpl implements UserService{
         queryWrapper.eq("username", username);
         Member member = userMapper.selectOne(queryWrapper);
         if (member == null){
-            return responseModel.response(false, ResultCode.USERNAME_MISSING);
+            return responseModel.response(false, ResultCode.MEMBER_USERNAME_MISSING);
         }
         //member = matchInfo(member);
-        return responseModel.response(true, ResultCode.FIND_SUCCESS, null, member);
+        return responseModel.response(true, ResultCode.MEMBER_FIND_SUCCESS, null, member);
     }
 
     @Override
     public ResponseModel login(Member member) {
         ResponseModel responseModel = new ResponseModel();
         Member memberConfirm = (Member) findUserByUsername(member.getUsername()).getObject();
-        if ( memberConfirm == null ) return responseModel.response(false, ResultCode.USERNAME_MISSING);
+        if ( memberConfirm == null ) return responseModel.response(false, ResultCode.MEMBER_USERNAME_MISSING);
         if ( !memberConfirm.getPassword().equals(SaltUtils.saltEncrypt(member.getPassword(),
                 memberConfirm.getSalt()))) return responseModel.response(false, ResultCode.PASSWORD_ERROR);
         return responseModel.response(true, ResultCode.LOGIN_SUCCESS, null, memberConfirm);

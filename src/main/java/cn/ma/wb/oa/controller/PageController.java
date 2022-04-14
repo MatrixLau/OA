@@ -50,4 +50,11 @@ public class PageController {
         map.put("member", member);
         return "myTicket";
     }
+
+    @RequestMapping("/myApprovalTicket")
+    public String processTicket(ModelMap map) {
+        Member member = (Member) session.getAttribute("member");
+        map.put("member", member);
+        return "myApprovalTicket";
+    }
 }
