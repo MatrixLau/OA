@@ -18,19 +18,27 @@
         //自定义验证规则
         form.verify({
             notBlank: function(value) {
-                if (value.length == 0) {
-                    return '文本不能为空';
+                let data = form.val('submit-form');
+                if (data.edit_id == "") {
+                    if (value.length == 0) {
+                        return '文本不能为空';
+                    }
                 }
             },
             notSelected: function(value) {
                 let data = form.val('submit-form');
-                if (value == "" && data.membership <= 1) {
-                    return '请选择选项！';
+                if (data.edit_id == ""){
+                    if (value == "" && data.membership <= 1) {
+                        return '请选择选项！';
+                    }
                 }
             },
             password: function(value){
-                if(value.length == 0){
-                    return '密码不能为空';
+                let data = form.val('submit-form');
+                if (data.edit_id == "") {
+                    if (value.length == 0) {
+                        return '密码不能为空';
+                    }
                 }
             }
         });
@@ -45,26 +53,51 @@
             form.render("select");
         });
 
+        form.on('select(classChange)', function(data){
+            let formData = form.val('submit-form');
+            if (formData.membership > 1) {
+                $("[name=classid]").val('');
+                $("[name=classid]").attr("disabled","disabled");
+            } else {
+                $("[name=classid]").removeAttr("disabled");
+            }
+            form.render("select");
+        });
+
         //监听提交
+        form.on('submit(findBtn)', function(data){
+            let formData = data.field;
+            layer.confirm('确定查找[id:'+formData.edit_id+']的信息进行修改？', function(index){
+                $.post("user/findByID", {
+                    m_id:formData.edit_id
+                },function (result) {
+                    layer.msg(result.message);
+                    if (result.flag){
+                        loadForm(result.object);
+                    }
+                });
+                layer.close(index);
+            });
+            return false;
+        });
+
         form.on('submit(submitBtn)', function(data){
-            // layui.layer.alert(JSON.stringify(data.field), {
-            //         title: '最终的提交信息'
-            //     // })
-            // });
-            layer.confirm('确定申请？', function(index){
-                let formData = data.field;
-                $.post("user/add", {
+            let formData = data.field;
+            layer.confirm('确定修改？', function(index){
+                $.post("user/edit", {
+                    m_id:formData.id,
                     name:formData.name,
                     sex:formData.sex,
                     membership:formData.membership,
                     class_id:formData.classid,
                     username:formData.username,
-                    password:formData.password
                 },function (result) {
                     layer.msg(result.message);
-                    setTimeout( function(){
-                        window.location.reload();
-                    }, 1200 );
+                    if (result.flag){
+                        setTimeout( function(){
+                            window.location.reload();
+                        }, 1200 );
+                    }
                 });
                 layer.close(index);
             });
@@ -90,13 +123,36 @@
     //加载行政班级
     $.get("/info/getClassesList", function loadClass(classList) {
         classList = eval(classList);
-        let op = '';
+        let op = '<option value="">请选择</option>';
         for (let i = 0; i < classList.length; i++) {
             op += '<option value="'+classList[i].id+'">'+classList[i].text+'</option>';
         }
-        $("[name=classid]").append(op);
+        $("[name=classid]").html(op);
         layui.form.render('select', 'submit-form');
     });
+
+    function loadForm(data){
+        if (data != null) {
+            $("[name=id]").val(data.m_id);
+            $("[name=name]").val(data.name);
+            $("input:radio[name=sex][value="+ data.sex +"]").attr("checked", "true");
+            $("input:radio[name=membership][value="+ data.membership +"]").attr("checked", "true");
+            // $('input[name="sex"][value="'+data.sex+'"]').prop('checked','checked');
+            // $('input[name="sex"][value="'+data.sex+'"]').attr("checked", "true");
+            //  $("input:radio[name=sex][value="+ data.sex +"]").prop('checked','checked');
+            $("select[name=classid] option[value="+ data.class_id +"]").attr("selected", "selected");
+            // $("[name=class_id]").val(data.class_id);
+            $("[name=username]").val(data.username);
+            $("[name=password]").val(data.password);
+            $("[name=salt]").val(data.salt);
+            layui.form.render('radio');
+            layui.form.render('select')
+            $("#find-form").addClass("layui-hide");
+            $("#find-btn").addClass("layui-hide");
+            $("#edit-form").removeClass("layui-hide");
+            $("#edit-btn").removeClass("layui-hide");
+        }
+    }
 
 </script>
 <body>
@@ -107,53 +163,81 @@
             <div class="layui-card">
                 <div class="layui-card-header">
                     <fieldset class="layui-elem-field layui-field-title">
-                        <legend>添加成员</legend>
+                        <legend>修改成员</legend>
                     </fieldset>
                 </div>
                 <div class="layui-card-body">
                     <form class="layui-form" action="" lay-filter="submit-form" id="submit-form">
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">用户名</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="name" lay-verify="notBlank" autocomplete="off" placeholder="请输入名称" class="layui-input">
+                        <div id="find-form">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">需修改ID</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="edit_id" autocomplete="off" placeholder="请输入名称" class="layui-input">
+                                </div>
                             </div>
                         </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">性别</label>
-                            <div class="layui-input-block" name="sex">
-                                <input type="radio" name="sex" value="0" title="男" checked="">
-                                <input type="radio" name="sex" value="1" title="女">
+
+
+                        <div id="edit-form" class="layui-hide">
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">用户ID</label>
+                                <div class="layui-input-block">
+                                    <input disabled="disabled" type="text" name="id" lay-verify="notBlank" autocomplete="off" placeholder="请输入名称" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">用户名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="name" lay-verify="notBlank" autocomplete="off" placeholder="请输入名称" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">性别</label>
+                                <div class="layui-input-block" name="sex">
+                                    <input type="radio" name="sex" value="0" title="男" checked="">
+                                    <input type="radio" name="sex" value="1" title="女">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">成员身份</label>
+                                <div class="layui-input-block" id="membership">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">行政班级</label>
+                                <div class="layui-input-block" >
+                                    <select name="classid" lay-verify="notSelected" lay-filter="classChange">
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">登录名</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="username" lay-verify="notBlank" autocomplete="off" placeholder="请输入名称" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">登录密码</label>
+                                <div class="layui-input-block">
+                                    <input type="text" disabled="disabled" name="password" lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">加密盐</label>
+                                <div class="layui-input-block">
+                                    <input type="text" disabled="disabled" name="salt" lay-verify="password" placeholder="请输入盐" autocomplete="off" class="layui-input">
+                                </div>
                             </div>
                         </div>
+
                         <div class="layui-form-item">
-                            <label class="layui-form-label">成员身份</label>
-                            <div class="layui-input-block" id="membership">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">行政班级</label>
-                            <div class="layui-input-block" >
-                                <select name="classid" lay-verify="notSelected">
-                                    <option value="">请选择</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">登录名</label>
-                            <div class="layui-input-block">
-                                <input type="text" name="username" lay-verify="notBlank" autocomplete="off" placeholder="请输入名称" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <label class="layui-form-label">登录密码</label>
-                            <div class="layui-input-block">
-                                <input type="password" name="password" lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-form-item">
-                            <div style="text-align: center">
-                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="submitBtn">执行操作</button>
+                            <div style="text-align: center" id="find-btn">
+                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="findBtn">查找</button>
                                 <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                            <div style="text-align: center" id="edit-btn" class="layui-hide">
+                                <button type="submit" class="layui-btn" lay-submit="" lay-filter="submitBtn">修改</button>
+                                <button onclick="window.location.reload()" class="layui-btn layui-btn-primary">返回</button>
                             </div>
                         </div>
                     </form>

@@ -46,7 +46,9 @@
                     keyword:keyword
                 },function (result) {
                     layer.msg(result.message);
-                    loadTable(result.object);
+                    if (result.flag){
+                        loadTable(result.object);
+                    }
                 });
                 layer.close(index);
             });
@@ -225,13 +227,6 @@
                         layer.close(index);
                     });
                 }
-            });
-
-            table.on('edit(findTable)', function(obj){
-                var value = obj.value //得到修改后的值
-                    ,data = obj.data //得到所在行所有键值
-                    ,field = obj.field; //得到字段
-                layer.msg('[ID: '+ data.m_id +'] ' + field + ' 字段更改值为：'+ layui.util.escape(value));
             });
         });
     }

@@ -57,9 +57,11 @@
                     password:formData.password
                 },function (result) {
                     layer.msg(result.message);
-                    setTimeout( function(){
-                        window.location.reload();
-                    }, 1200 );
+                    if(result.flag){
+                        setTimeout( function(){
+                            window.location.reload();
+                        }, 1200 );
+                    }
                 });
                 layer.close(index);
             });
