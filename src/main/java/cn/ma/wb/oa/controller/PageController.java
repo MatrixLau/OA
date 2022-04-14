@@ -48,7 +48,9 @@ public class PageController {
     }
 
     @RequestMapping("/findMember")
-    public String findMember() {
+    public String findMember(ModelMap map) {
+        Member member = (Member) session.getAttribute("member");
+        map.put("member", member);
         return "findMember";
     }
 

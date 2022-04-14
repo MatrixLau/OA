@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>OA系统</title>
@@ -15,22 +16,74 @@
         var form = layui.form
             ,layer = layui.layer;
 
+        form.verify({
+            notSelected: function(value) {
+                let data = form.val('submit-form');
+                if (value === "" && (data.choice === "membership" | data.choice === "class_id")) {
+                    return '请选择选项！';
+                }
+            },
+            notBlank: function(value) {
+                let data = form.val('submit-form');
+                if (value === "" && !(data.choice === "membership" | data.choice === "class_id")) {
+                    return '请输入关键词！';
+                }
+            }
+        });
+
         //监听提交
         form.on('submit(submitBtn)', function(data){
             layer.confirm('确定查询？', function(index){
                 let formData = data.field;
-                $.post("user/findByMethod", {
+                let keyword;
+                if (formData.keyword === ""){
+                    keyword = formData.selection;
+                }else {
+                    keyword = formData.keyword;
+                }
+                $.post("/user/findByMethod", {
                     method:formData.choice,
-                    keyword:formData.keyword
+                    keyword:keyword
                 },function (result) {
                     layer.msg(result.message);
-                    setTimeout( function(){
-                        window.location.reload();
-                    }, 1200 );
+                    loadTable(result.object);
                 });
                 layer.close(index);
             });
             return false;
+        });
+
+        form.on('radio(methodChange)', function(data){
+            if (data.value === 'membership' | data.value === 'class_id') {
+                $("[name=formSelection]").removeClass("layui-hide");
+                $("[name=formInput]").addClass("layui-hide");
+                $("[name=keyword]").val('');
+                if (data.value === 'class_id'){
+                    $.get("/info/getClassesList", function loadClass(classList) {
+                        classList = eval(classList);
+                        let op = '<option value="">请选择</option>';
+                        for (let i = 0; i < classList.length; i++) {
+                            op += '<option value="'+classList[i].id+'">'+classList[i].text+'</option>';
+                        }
+                        $("[name=selection]").html(op);
+                        form.render('select', 'submit-form');
+                    });
+                }else {
+                    $.get("/info/getMembershipList", function loadClass(membershipList) {
+                        membershipList = eval(membershipList);
+                        let op = '<option value="">请选择</option>';
+                        for (let i = 0; i < membershipList.length; i++) {
+                            op += '<option value="'+membershipList[i].id+'">'+membershipList[i].text+'</option>';
+                        }
+                        $("[name=selection]").html(op);
+                        form.render('select', 'submit-form');
+                    });
+                }
+            } else {
+                $("[name=formSelection]").addClass("layui-hide");
+                $("[name=formInput]").removeClass("layui-hide");
+                $("[name=selection]").val('');
+            }
         });
     });
 
@@ -40,10 +93,10 @@
         let op = '';
         for (let i = 0; i < findMemberMethod.length; i++) {
             if (i == 0){
-                op += '<input type="radio" name="choice" value="'+findMemberMethod[i].value+'" title="'+findMemberMethod[i].text+'" checked="">';
+                op += '<input type="radio" lay-filter="methodChange" name="choice" value="'+findMemberMethod[i].value+'" title="'+findMemberMethod[i].text+'" checked="">';
                 continue;
             }
-            op += '<input type="radio" name="choice" value="'+findMemberMethod[i].value+'" title="'+findMemberMethod[i].text+'">';
+            op += '<input type="radio" lay-filter="methodChange" name="choice" value="'+findMemberMethod[i].value+'" title="'+findMemberMethod[i].text+'">';
         }
         $("[name=choice]").html(op);
         layui.form.render('radio', 'submit-form');
@@ -53,7 +106,7 @@
 </script>
 <body>
 <div class="layui-bg-gray" style="padding: 30px;">
-    <div class="layui-row layui-col-space12">
+    <div class="layui-row layui-col-space12" name="formBody">
         <div class="layui-col-md3"></div>
         <div class="layui-col-md6">
             <div class="layui-card">
@@ -68,10 +121,18 @@
                             <label class="layui-form-label">查询方式</label>
                             <div class="layui-input-block" name="choice"></div>
                         </div>
-                        <div class="layui-form-item">
+                        <div class="layui-form-item" name="formInput">
                             <label class="layui-form-label">关键字</label>
                             <div class="layui-input-block">
-                                <input type="text" name="keyword" lay-verify="required" autocomplete="off" placeholder="请输入关键字" class="layui-input">
+                                <input type="text" name="keyword" lay-verify="notBlank" autocomplete="off" placeholder="请输入关键字" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item layui-hide" name="formSelection">
+                            <label class="layui-form-label">选项</label>
+                            <div class="layui-input-block">
+                                <select name="selection" lay-verify="notSelected">
+                                    <option value="">请选择</option>
+                                </select>
                             </div>
                         </div>
                         <div class="layui-form-item">
@@ -85,6 +146,99 @@
             </div>
         </div>
     </div>
+    <!--    查询表格-->
+    <table class="layui-hide" id="findTable" lay-filter="findTable"></table>
+    </br>
+    <div style="width: auto; height: auto; text-align: center">
+        <button class="layui-btn layui-hide" name="reloadBtn" onclick="window.location.reload()">返回</button>
+    </div>
+
 </div>
+
+<script th:inline="javascript">
+
+    function loadTable(data){
+        //清空表
+        $("#findTable").length = 0;
+        //隐藏查询策略
+        $("[name=formBody]").hide();
+        //显示按钮
+        $("[name=reloadBtn]").removeClass("layui-hide");
+
+        let membershipList;
+
+        $.ajaxSettings.async = false;
+        $.get("/info/getMembershipList", function (result){
+            membershipList = result;
+        });
+        $.ajaxSettings.async = true;
+
+        //数据替换
+        if (data != null){
+            for (let i = 0; i < data.length; i++){
+                for (let j = 0; j < membershipList.length; j++){
+                    if (data[i].membership == membershipList[j].id){
+                        data[i].membership = membershipList[j].text;
+                    }
+                }
+                if (data[i].sex == 0) {
+                    data[i].sex = "男";
+                }else {
+                    data[i].sex = "女";
+                }
+            }
+        }
+
+        layui.use('table', function(){
+            var table = layui.table;
+            table.render({
+                elem: '#findTable'
+                ,data:data
+                ,cols: [
+                    [
+                        {field:'m_id', width:105, title: '用户ID', sort: true},
+                        {field:'name', width:105, title: '用户名'},
+                        {field:'sex', width:105, title: '性别', sort: true},
+                        {field:'membership', width:110, title: '成员身份', sort: true},
+                        {field:'class_id', width:105, title: '班级ID', sort: true},
+                        {field:'username', title: '用户名', width: 105},
+                        {field:'password', minWidth:150, title: '密码'},
+                        {field:'salt', width:105, title: '加密盐'},
+                        {align: 'center', title: '操作', width: 180, toolbar: "#bar"}
+                    ]
+                ],
+                page: true
+            });
+
+            table.on('tool(findTable)', function(obj){
+                let data = obj.data;
+                if(obj.event === 'del') {
+                    layer.confirm('是否确定删除？', function(index){
+                        $.post("/user/delByID", {m_id:data.m_id}, function (result){
+                            layer.msg(result.message);
+                            if (result.flag) {
+                                setTimeout( function(){
+                                    window.location.reload();
+                                }, 1200 );
+                            }
+                        });
+                        layer.close(index);
+                    });
+                }
+            });
+
+            table.on('edit(findTable)', function(obj){
+                var value = obj.value //得到修改后的值
+                    ,data = obj.data //得到所在行所有键值
+                    ,field = obj.field; //得到字段
+                layer.msg('[ID: '+ data.m_id +'] ' + field + ' 字段更改值为：'+ layui.util.escape(value));
+            });
+        });
+    }
+
+</script>
+<script type="text/html" id="bar">
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
 </body>
 </html>
