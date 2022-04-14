@@ -3,32 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>0A系统</title>
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
 </head>
 <body>
-<table class="layui-hide" id="test"></table>
+<table class="layui-hide" id="ticketTable"></table>
 
 <script src="layui/layui.js" charset="utf-8"></script>
 <!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
 
 <script th:inline="javascript">
+
     const member = [[${member}]];
 
     layui.use('table', function(){
-        var table = layui.table;
+        let table = layui.table;
 
         table.render({
-            elem: '#test'
-            ,url:'/ticket/findBySubmitMID?' + member.m_id
-            ,cols: [[
-                {field:'t_id', width:80, title: '申请ID', sort: true}
-                ,{field:'submit_m_id', width:80, title: '用户ID', sort: true}
-                ,{field:'title', minWidth:100, title: '申请标题'}
-                ,{field:'detail', minWidth:150, title: '申请详情'}
-                ,{field:'approval', title: '处理状态', width: 80}
-                ,{field:'approval_m_id', width:80, title: '处理人ID', sort: true}
-                ,{field:'approval_advice', minWidth:100, title: '处理意见'}
-            ]]
-            ,page: true
+            elem: '#ticketTable'
+            ,url:'/ticket/findBySubmitMID?submit_m_id=' + member.m_id
+            ,cols: [
+                [
+                    {field:'t_id', width:100, title: '申请ID', sort: true},
+                    {field:'submit_m_id', width:105, title: '申请用户', sort: true},
+                    {field:'submit_membership', width:130, title: '申请用户身份', sort: true},
+                    {field:'title', minWidth:200, title: '标题'},
+                    {field:'detail', minWidth:250, title: '申请详情'},
+                    {field:'approval', title: '处理状态', width: 100},
+                    {field:'approval_m_id', width:100, title: '处理人', sort: true},
+                    {field:'approval_m_id', width:125, title: '处理人身份', sort: true},
+                    {field:'approval_advice', minWidth:100, title: '处理意见'}
+                ]
+            ],
+            page: true
         });
     });
 </script>

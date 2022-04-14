@@ -3,8 +3,10 @@ package cn.ma.wb.oa.controller;
 import cn.ma.wb.oa.pojo.Ticket;
 import cn.ma.wb.oa.service.TicketService;
 import cn.ma.wb.oa.vo.ResponseModel;
+import cn.ma.wb.oa.vo.TableRenderModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -37,9 +39,9 @@ public class TicketController {
 
     @ResponseBody
     @RequestMapping("/findBySubmitMID")
-    public List<Ticket> findBySubmitMID(int submit_m_id){
-        List<Ticket> tickets = (List<Ticket>) ticketService.findTicketBySubmitMID(submit_m_id).getObject();
-        return tickets;
+    public TableRenderModel findBySubmitMID(int submit_m_id){
+        ResponseModel responseModel =  ticketService.findTicketBySubmitMID(submit_m_id);
+        return new TableRenderModel(0, responseModel.getObject());
     }
 
     @ResponseBody

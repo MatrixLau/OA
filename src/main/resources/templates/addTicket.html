@@ -35,6 +35,7 @@
                     let formData = data.field;
                     $.post("/ticket/add", {
                         submit_m_id:member.m_id,
+                        submit_membership:member.membership,
                         title:formData.title,
                         detail:formData.detail,
                     },function (result) {
