@@ -51,9 +51,9 @@
             //         title: '最终的提交信息'
             //     // })
             // });
-            layer.confirm('确定删除？', function(index){
+            layer.confirm('确定申请？', function(index){
                 let formData = data.field;
-                $.post("user/delByID", {
+                $.post("user/add", {
                     name:formData.name,
                     sex:formData.sex,
                     membership:formData.membership,

@@ -18,6 +18,7 @@ public enum ResultCode {
     CLASS_FIND_SUCCESS("C004", "班级查询成功！"),
 
     USER_MISSING("M100", "找不到该用户！"),
+    FIND_BY_METHOD_MISSING("M102", "找不到符合该条件的数据！"),
     CLASS_MISSING("C100", "找不到该班级！"),
     MEMBER_ID_MISSING("M101", "找不到ID！"),
     MEMBER_USERNAME_MISSING("M102", "找不到用户名！"),

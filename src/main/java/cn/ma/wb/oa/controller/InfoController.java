@@ -40,4 +40,8 @@ public class InfoController {
     public List<ListModel> getClassesList(){
         return infoService.getClassesList();
     }
+
+    @ResponseBody
+    @RequestMapping("/getFindMemberMethod")
+    public List<ListModel> getFindMemberMethod(){ return infoService.getFindMemberMethod(); }
 }

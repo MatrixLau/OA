@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -74,6 +75,19 @@ public class UserServiceImpl implements UserService{
         Member member = userMapper.selectOne(queryWrapper);
         if (member == null){
             return responseModel.response(false, ResultCode.MEMBER_USERNAME_MISSING);
+        }
+        //member = matchInfo(member);
+        return responseModel.response(true, ResultCode.MEMBER_FIND_SUCCESS, null, member);
+    }
+
+    @Override
+    public ResponseModel findUserByMethod(String method, String keyword) {
+        ResponseModel responseModel = new ResponseModel();
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq(method, keyword);
+        List<Member> member = userMapper.selectList(queryWrapper);
+        if (member.size() == 0){
+            return responseModel.response(false, ResultCode.FIND_BY_METHOD_MISSING);
         }
         //member = matchInfo(member);
         return responseModel.response(true, ResultCode.MEMBER_FIND_SUCCESS, null, member);

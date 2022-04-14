@@ -15,6 +15,8 @@ public interface UserService {
 
     ResponseModel findUserByUsername(String username);
 
+    ResponseModel findUserByMethod(String method, String keyword);
+
     Member matchInfo(Member member);
 
     ResponseModel login(Member member);

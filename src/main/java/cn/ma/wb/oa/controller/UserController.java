@@ -50,6 +50,12 @@ public class UserController {
     }
 
     @ResponseBody
+    @RequestMapping("/findByMethod")
+    public ResponseModel findUseByMethod(String method, String keyword){
+        return userService.findUserByMethod(method, keyword);
+    }
+
+    @ResponseBody
     @RequestMapping("/matchInfo")
     public Member matchInfo(Member member){ return userService.matchInfo(member);}
 

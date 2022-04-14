@@ -42,6 +42,16 @@ public class PageController {
         return "delMember";
     }
 
+    @RequestMapping("/editMember")
+    public String editMember() {
+        return "editMember";
+    }
+
+    @RequestMapping("/findMember")
+    public String findMember() {
+        return "findMember";
+    }
+
 
     @RequestMapping("/addTicket")
     public String addTikcet(ModelMap map) {

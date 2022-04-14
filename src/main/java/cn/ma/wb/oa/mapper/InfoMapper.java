@@ -21,4 +21,7 @@ public interface InfoMapper {
 
     @Select("select * from classlist")
     List<ListModel> getClassesList();
+
+    @Select("select * from findmembermethod")
+    List<ListModel> getFindMemberMethod();
 }

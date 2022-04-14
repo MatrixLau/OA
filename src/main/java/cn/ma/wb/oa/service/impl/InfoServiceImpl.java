@@ -34,4 +34,9 @@ public class InfoServiceImpl implements InfoService {
     public List<ListModel> getClassesList() {
         return infoMapper.getClassesList();
     }
+
+    @Override
+    public List<ListModel> getFindMemberMethod() {
+        return infoMapper.getFindMemberMethod();
+    }
 }

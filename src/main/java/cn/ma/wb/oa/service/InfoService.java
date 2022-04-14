@@ -14,4 +14,6 @@ public interface InfoService {
     List<MenuModel> getSideBarItemList();
 
     List<ListModel> getClassesList();
+
+    List<ListModel> getFindMemberMethod();
 }
