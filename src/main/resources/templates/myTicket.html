@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>0A系统</title>
+</head>
+<body>
+<table class="layui-hide" id="test"></table>
+
+<script src="layui/layui.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述 JS 路径需要改成你本地的 -->
+
+<script th:inline="javascript">
+    const member = [[${member}]];
+
+    layui.use('table', function(){
+        var table = layui.table;
+
+        table.render({
+            elem: '#test'
+            ,url:'/ticket/findBySubmitMID?' + member.m_id
+            ,cols: [[
+                {field:'t_id', width:80, title: '申请ID', sort: true}
+                ,{field:'submit_m_id', width:80, title: '用户ID', sort: true}
+                ,{field:'title', minWidth:100, title: '申请标题'}
+                ,{field:'detail', minWidth:150, title: '申请详情'}
+                ,{field:'approval', title: '处理状态', width: 80}
+                ,{field:'approval_m_id', width:80, title: '处理人ID', sort: true}
+                ,{field:'approval_advice', minWidth:100, title: '处理意见'}
+            ]]
+            ,page: true
+        });
+    });
+</script>
+</body>
+</html>
