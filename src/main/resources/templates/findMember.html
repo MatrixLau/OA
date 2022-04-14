@@ -81,7 +81,12 @@
                         form.render('select', 'submit-form');
                     });
                 }
-            } else {
+            } else if (data.value === '1') {
+                $("[name=formSelection]").addClass("layui-hide");
+                $("[name=formInput]").addClass("layui-hide");
+                $("[name=selection]").val('');
+                $("[name=keyword]").val('1');
+            } else{
                 $("[name=formSelection]").addClass("layui-hide");
                 $("[name=formInput]").removeClass("layui-hide");
                 $("[name=selection]").val('');

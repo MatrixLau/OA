@@ -75,6 +75,7 @@
         //设置tab的高度，
         $("[name=iframeMain]").css("height",h+"px");
         $("#login_username").html(member.name);
+
         $.get("/info/getSideBarList", function (sideBarList){
             $.get("/info/getSideBarItemList", function (sideBarItemList){
                 $("#side-bar").html("");
@@ -105,12 +106,28 @@
             });
         });
         $.get("/info/getMembershipList", function (membershipList) {
-            membershipList = eval(membershipList);
-            for (let i = 0; i < membershipList.length; i++) {
-                if (membershipList[i].id == member.membership) {
-                    $("#welcome").text($("#welcome").html() + membershipList[i].text);
+            $.get("/info/getClassesList", function (classList){
+                membershipList = eval(membershipList);
+                classList = eval(classList);
+                let membership = '';
+                let class_id = '';
+                for (let i = 0; i < classList.length; i++) {
+                    if (classList[i].id == member.class_id) {
+                        class_id = classList[i].text;
+                    }
                 }
-            }
+                for (let i = 0; i < membershipList.length; i++) {
+                    if (membershipList[i].id == member.membership) {
+                        membership = membershipList[i].text;
+                    }
+                }
+                if (member.membership <= 1) {
+                    $("#welcome").text($("#welcome").html() + "来自" + class_id + "的" + membership);
+                } else {
+                    $("#welcome").text($("#welcome").html() + membership);
+                }
+
+            });
         });
         layui.element.init();
     });
