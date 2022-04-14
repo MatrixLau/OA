@@ -12,6 +12,7 @@ public enum ResultCode {
     MEMBER_FIND_SUCCESS("M004", "成员查询成功！"),
     LOGIN_SUCCESS("M005", "登录成功！"),
     TICKET_SUBMIT_SUCCESS("T001", "申请提交成功！"),
+    TICKET_DEL_SUCCESS("T002", "申请删除成功！"),
     TICKET_EDIT_SUCCESS("T003", "申请修改成功！"),
     TICKET_FIND_SUCCESS("T004", "申请查询成功！"),
     CLASS_FIND_SUCCESS("C004", "班级查询成功！"),
@@ -30,6 +31,7 @@ public enum ResultCode {
     MEMBER_EDIT_FAIL("M303", "成员修改失败！"),
     MEMBER_FIND_FAIL("M304", "成员查询失败！"),
     TICKET_SUBMIT_FAIL("T301", "申请提交失败！"),
+    TICKET_DEL_FAIL("T302", "申请删除失败！"),
     TICKET_EDIT_FAIL("T303", "申请修改失败！"),
     CLASS_FIND_FAIL("C301", "班级查询失败！");
 

@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<table class="layui-hide" id="ticketTable"></table>
+<table class="layui-hide" id="ticketTable" lay-filter="ticketTable"></table>
 
 <script src="layui/layui.js" charset="utf-8"></script>
 <script src="js/jquery-3.3.1.js" charset="utf-8"></script>
@@ -98,7 +98,7 @@
     });
 </script>
 <script type="text/html" id="bar">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+<!--    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
 </script>
 </body>

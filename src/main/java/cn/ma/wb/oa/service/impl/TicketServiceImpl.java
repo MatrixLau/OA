@@ -56,7 +56,11 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public ResponseModel delTicket(int t_id) {
-        return null;
+        ResponseModel responseModel = new ResponseModel();
+        if (ticketMapper.deleteById(t_id) <= 0) {
+            return responseModel.response(false, ResultCode.TICKET_DEL_FAIL);
+        }
+        return responseModel.response(true, ResultCode.TICKET_DEL_SUCCESS);
     }
 
     @Override

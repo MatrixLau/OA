@@ -37,6 +37,12 @@ public class PageController {
         return "addMember";
     }
 
+    @RequestMapping("/delMember")
+    public String delMember() {
+        return "delMember";
+    }
+
+
     @RequestMapping("/addTicket")
     public String addTikcet(ModelMap map) {
         Member member = (Member) session.getAttribute("member");
