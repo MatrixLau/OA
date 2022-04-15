@@ -14,6 +14,6 @@ public class Notice {
     private String detail;
     private String time;
     private String type;
-    private String class_id;
+    private Integer class_id;
 
 }

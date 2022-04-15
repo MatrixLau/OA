@@ -15,7 +15,7 @@ public class ClassesServiceImpl implements ClassesService {
     private ClassesMapper classesMapper;
 
     @Override
-    public ResponseModel findByID(int class_id) {
+    public ResponseModel findByID(Integer class_id) {
         ResponseModel responseModel = new ResponseModel();
         Classes classes = classesMapper.selectById(class_id);
         if (classes == null){

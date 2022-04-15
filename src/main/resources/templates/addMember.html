@@ -19,7 +19,7 @@
         form.verify({
             notSelected: function(value) {
                 let data = form.val('submit-form');
-                if (value == "" && data.membership <= 1) {
+                if (value == "0" && data.membership <= 1) {
                     return '请选择选项！';
                 }
             },
@@ -46,7 +46,7 @@
             //         title: '最终的提交信息'
             //     // })
             // });
-            layer.confirm('确定申请？', function(index){
+            layer.confirm('确定添加？', function(index){
                 let formData = data.field;
                 $.post("user/add", {
                     name:formData.name,
@@ -131,7 +131,7 @@
                             <label class="layui-form-label">行政班级</label>
                             <div class="layui-input-block" >
                                 <select name="classid" lay-verify="notSelected">
-                                    <option value="">请选择</option>
+                                    <option value="0">请选择</option>
                                 </select>
                             </div>
                         </div>

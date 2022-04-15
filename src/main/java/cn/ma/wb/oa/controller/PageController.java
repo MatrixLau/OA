@@ -54,17 +54,21 @@ public class PageController {
         return "findMember";
     }
 
-    @RequestMapping("/schoolNotice")
-    public String schoolNotice() {
-        return "schoolNotice";
+    @RequestMapping("/notice")
+    public String notice(ModelMap map, String type) {
+        Member member = (Member) session.getAttribute("member");
+        map.put("type", type);
+        map.put("member", member);
+        return "notice";
     }
 
-    @RequestMapping("/classNotice")
-    public String classNotice(ModelMap map) {
+    @RequestMapping("/manageNotice")
+    public String manageNotice(ModelMap map) {
         Member member = (Member) session.getAttribute("member");
         map.put("member", member);
-        return "classNotice";
+        return "manageNtice";
     }
+
 
     @RequestMapping("/addTicket")
     public String addTikcet(ModelMap map) {

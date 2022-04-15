@@ -15,8 +15,8 @@ public class NoticeController {
     private NoticeService noticeService;
 
     @ResponseBody
-    @RequestMapping("/findSchoolNotice")
-    public ResponseModel findSchoolNotice(){
-        return noticeService.findSchoolNotice();
+    @RequestMapping("/find")
+    public ResponseModel findNotice(String type, Integer class_id){
+        return noticeService.findNotice(type, class_id);
     }
 }

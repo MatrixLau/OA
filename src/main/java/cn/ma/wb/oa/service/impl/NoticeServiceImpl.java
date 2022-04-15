@@ -18,15 +18,19 @@ public class NoticeServiceImpl implements NoticeService {
     private NoticeMapper noticeMapper;
 
     @Override
-    public ResponseModel findSchoolNotice() {
+    public ResponseModel findNotice(String type, Integer class_id) {
         ResponseModel responseModel = new ResponseModel();
         QueryWrapper queryWrapper = new QueryWrapper();
-        queryWrapper.eq("type", "school");
+        if (type.equals("school")){
+            queryWrapper.eq("type", type);
+        }else{
+            queryWrapper.eq("type", type);
+            queryWrapper.eq("class_id", class_id);
+        }
         List<Notice> notices = noticeMapper.selectList(queryWrapper);
-        if (notices.size() <= 0){
+        if (notices.size() == 0){
             return responseModel.response(false, ResultCode.NOTICE_MISSING);
         }
         return responseModel.response(true, ResultCode.NOTICE_FIND_SUCCESS, null, notices);
     }
-
 }

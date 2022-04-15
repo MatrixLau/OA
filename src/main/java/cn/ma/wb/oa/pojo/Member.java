@@ -11,12 +11,12 @@ public class Member {
 
 //    @TableField(updateStrategy = FieldStrategy.IGNORED)
     @TableId(value = "m_id", type = IdType.AUTO)
-    private int m_id;
+    private Integer m_id;
     private String name;
     private String sex;
     private String membership;
 
-    private int class_id;
+    private Integer class_id;
 
     private String username;
     private String password;

@@ -4,5 +4,5 @@ import cn.ma.wb.oa.vo.ResponseModel;
 
 public interface NoticeService {
 
-    ResponseModel findSchoolNotice();
+    ResponseModel findNotice(String type, Integer class_id);
 }

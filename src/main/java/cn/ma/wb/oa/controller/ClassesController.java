@@ -14,6 +14,6 @@ public class ClassesController {
     private ClassesService classesService;
 
     @RequestMapping("/findByID")
-    public ResponseModel findByID(int class_id){ return classesService.findByID(class_id);}
+    public ResponseModel findByID(Integer class_id){ return classesService.findByID(class_id);}
 
 }

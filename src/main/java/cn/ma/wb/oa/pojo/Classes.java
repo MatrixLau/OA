@@ -10,7 +10,7 @@ import lombok.Data;
 public class Classes {
 
     @TableId(value = "class_id", type = IdType.AUTO)
-    private int class_id;
+    private Integer class_id;
     private String name;
     private String teacher_id;
     private String major_id;

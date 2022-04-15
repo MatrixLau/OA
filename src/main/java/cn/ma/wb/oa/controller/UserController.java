@@ -22,17 +22,17 @@ public class UserController {
     private UserService userService;
 
     @ResponseBody
-    @PostMapping("/add")
+    @RequestMapping("/add")
     public ResponseModel addUser(Member member) { return userService.addUser(member); }
 
     @ResponseBody
-    @PostMapping("/delByID")
+    @RequestMapping("/delByID")
     public ResponseModel delUserByID(int m_id) {
         return userService.delUser(m_id);
     }
 
     @ResponseBody
-    @PostMapping("/edit")
+    @RequestMapping("/edit")
     public ResponseModel editUser(Member member){
         return userService.editUser(member);
     }
