@@ -21,6 +21,4 @@ public class Ticket {
     private String approval_m_id;
     private String approval_advice;
 
-    private String submit_t_id;
-
 }
