@@ -17,7 +17,5 @@ public interface TicketService {
 
     ResponseModel findTicketByApprovalMID(int approval_m_id);
 
-    ResponseModel approvalTicket(Ticket ticket);
-
     ResponseModel submitTicket(int t_id);
 }

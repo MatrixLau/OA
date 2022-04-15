@@ -54,6 +54,17 @@ public class PageController {
         return "findMember";
     }
 
+    @RequestMapping("/schoolNotice")
+    public String schoolNotice() {
+        return "schoolNotice";
+    }
+
+    @RequestMapping("/classNotice")
+    public String classNotice(ModelMap map) {
+        Member member = (Member) session.getAttribute("member");
+        map.put("member", member);
+        return "classNotice";
+    }
 
     @RequestMapping("/addTicket")
     public String addTikcet(ModelMap map) {

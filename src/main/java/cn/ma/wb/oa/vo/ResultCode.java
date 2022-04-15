@@ -16,6 +16,7 @@ public enum ResultCode {
     TICKET_EDIT_SUCCESS("T003", "申请修改成功！"),
     TICKET_FIND_SUCCESS("T004", "申请查询成功！"),
     CLASS_FIND_SUCCESS("C004", "班级查询成功！"),
+    NOTICE_FIND_SUCCESS("N004", "公告查询成功！"),
 
     USER_MISSING("M100", "找不到该用户！"),
     FIND_BY_METHOD_MISSING("M102", "找不到符合该条件的数据！"),
@@ -24,6 +25,7 @@ public enum ResultCode {
     MEMBER_USERNAME_MISSING("M102", "找不到用户名！"),
     MEMBER_EDIT_MISSING("M103","无修改项！"),
     TICKET_MISSING("T100", "找不到申请！"),
+    NOTICE_MISSING("N100", "找不到公告！"),
 
     PASSWORD_ERROR("M201", "密码错误！"),
 

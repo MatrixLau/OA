@@ -106,11 +106,6 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public ResponseModel approvalTicket(Ticket ticket) {
-        return null;
-    }
-
-    @Override
     public ResponseModel submitTicket(int t_id) {
         ResponseModel responseModel = new ResponseModel();
         Ticket ticket = ticketMapper.selectById(t_id);

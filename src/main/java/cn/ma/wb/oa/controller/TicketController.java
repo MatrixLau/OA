@@ -71,10 +71,4 @@ public class TicketController {
     public ResponseModel submitTicket(int t_id){
         return ticketService.submitTicket(t_id);
     }
-
-    @ResponseBody
-    @RequestMapping("/approval")
-    public ResponseModel approvalTicket(Ticket ticket){
-        return ticketService.approvalTicket(ticket);
-    }
 }

@@ -27,7 +27,13 @@
                 if(value.length == 0){
                     return '密码不能为空';
                 }
+            },
+            verifyCode: function (value) {
+                if(value.length < 4){
+                    return '验证码不足4位！';
+                }
             }
+
         });
 
         //监听提交
@@ -35,19 +41,74 @@
             // layer.alert(JSON.stringify(data.field), {
             //     title: '最终的提交信息'
             // })
-            $.post("user/login", {username: $("#username").val().trim(),
-                password: $("#password").val().trim()}, function (result) {
-                layer.msg(result.message);
-                if (result.flag) {
-                    setTimeout( function(){
-                        window.location.href = "panel";
-                    }, 1200 );
+            let formData = data.field;
+            $.ajax({
+                async: false,
+                type: 'post',
+                url: 'login/checkVerify',
+                dataType: "json",
+                data: {
+                    verifyInput: formData.verifyCode
+                },
+                success: function (result) {
+                    if (result) {
+                        $.post("user/login", {username: formData.username,
+                            password: formData.password}, function (result) {
+                            layer.msg(result.message);
+                            if (result.flag) {
+                                setTimeout( function(){
+                                    window.location.href = "panel";
+                                }, 1200 );
+                            }else{
+                                getVerify();
+                            }
+                        });
+                    } else {
+                        getVerify();
+                        layer.msg("验证码有误！");
+                    }
                 }
             });
             return false;
         });
 
     });
+
+
+    function getVerify() {
+        $("#verify_input").val("");
+        $("#imgVerify").attr("src", 'login/getVerify?' + Math.random());//jquery方式
+    }
+
+    // function aVerify() {
+    //     let value = $("#verify_input").val();
+    //
+    //     if (value.length < 4) {
+    //         alert("验证码不足4位 , 请重新输入！！");
+    //         return 0;
+    //     }
+    //     $.ajax({
+    //         async: false,
+    //         type: 'post',
+    //         url: 'login/checkVerify',
+    //         dataType: "json",
+    //         data: {
+    //             verifyInput: value
+    //         },
+    //         success: function (result) {
+    //             if (result) {
+    //                 if (confirm("验证成功, 再试一次 ！")) {
+    //                     getVerify();
+    //                 } else {
+    //                     window.location.href = "https:www.baidu.com";
+    //                 }
+    //             } else {
+    //                 alert("验证失败 , 点击确定重新验证");
+    //                 getVerify();
+    //             }
+    //         }
+    //     });
+    // }
 </script>
 <body>
 <div class="layui-bg-gray" style="padding: 30px;">
@@ -71,6 +132,17 @@
                             <label class="layui-form-label">密码</label>
                             <div class="layui-input-block">
                                 <input type="password" name="password" id="password" lay-verify="password" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-form-item">
+                            <div id="main_form">
+                                <label class="layui-form-label">验证码</label>
+                                <div id="input_content" class="layui-input-block">
+                                    <input class="layui-input" name="verifyCode" lay-verify="verifyCode" autocomplete="off" autofocus id="verify_input" placeholder="请输入验证码" maxlength="4">
+                                </div></br>
+                                <div id="verify_image" style="text-align: center">
+                                    <img id="imgVerify" src="login/getVerify" alt="更换验证码" height="36" width="170" onclick="getVerify(this);">
+                                </div>
                             </div>
                         </div>
                         <div class="layui-form-item">
