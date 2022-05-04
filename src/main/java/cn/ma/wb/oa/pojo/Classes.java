@@ -13,5 +13,4 @@ public class Classes {
     private Integer class_id;
     private String name;
     private String teacher_id;
-    private String major_id;
 }

@@ -438,11 +438,11 @@
                 },function (result) {
                     layer.msg(result.message);
                     // layui.table.render("findTable");
-                    // if (result.flag){
-                    //     setTimeout( function(){
-                    //         window.location.reload();
-                    //     }, 1200 );
-                    // }
+                    if (result.flag){
+                        setTimeout( function(){
+                            window.location.reload();
+                        }, 1200 );
+                    }
                 });
                 layer.close(index);
             });
